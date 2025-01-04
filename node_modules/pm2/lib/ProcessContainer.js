@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2021 the PM2 project authors. All rights reserved.
+ * Copyright 2013-2022 the PM2 project authors. All rights reserved.
  * Use of this source code is governed by a license that
  * can be found in the LICENSE file.
  *
@@ -13,6 +13,7 @@ var p       = require('path');
 var cst     = require('../constants');
 var Utility = require('./Utility.js');
 var ProcessUtils = require('./ProcessUtils');
+var Url = require('url');
 
 // Load all env-vars from master.
 var pm2_env = JSON.parse(process.env.pm2_env);
@@ -298,7 +299,7 @@ function exec(script, stds) {
     process.chdir(pm2_env.pm_cwd || process.env.PWD || p.dirname(script));
 
     if (ProcessUtils.isESModule(script) === true)
-      import(process.env.pm_exec_path);
+      import(Url.pathToFileURL(process.env.pm_exec_path));
     else
       require('module')._load(script, null, true);
 

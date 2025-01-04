@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2021 the PM2 project authors. All rights reserved.
+ * Copyright 2013-2022 the PM2 project authors. All rights reserved.
  * Use of this source code is governed by a license that
  * can be found in the LICENSE file.
  */
@@ -98,9 +98,12 @@ Log.stream = function(Client, id, raw, timestamp, exclusive, highlight) {
     var min_padding = 3
 
     bus.on('log:*', function(type, packet) {
-      if (id !== 'all'
-          && packet.process.name != id
-          && packet.process.pm_id != id)
+        var isMatchingProcess = id === 'all'
+            || packet.process.name == id
+            || packet.process.pm_id == id
+            || packet.process.namespace == id;
+
+      if (!isMatchingProcess)
         return;
 
       if ((type === 'out' && exclusive === 'err')
